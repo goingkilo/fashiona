@@ -1,4 +1,4 @@
-package com.goingkilo.deardiary;
+package com.goingkilo.fashiona;
 
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;

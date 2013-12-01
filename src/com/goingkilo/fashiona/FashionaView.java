@@ -1,4 +1,4 @@
-package com.goingkilo.deardiary;
+package com.goingkilo.fashiona;
 
 import android.content.Context;
 import android.content.Intent;

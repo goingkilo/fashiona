@@ -1,4 +1,4 @@
-package com.goingkilo.deardiary;
+package com.goingkilo.fashiona;
 
 import java.io.File;
 import java.io.FileOutputStream;
