@@ -1,9 +1,7 @@
-
-
-
-package com.goingkilo.fashiona
+package com.goingkilo.deardiary;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -43,25 +41,34 @@ public class FashionaView extends TextView {
 		Rect src = new Rect( 0,0, bmp.getWidth(), bmp.getHeight() );
 
 		//Display display = getWindowManager().getDefaultDisplay();
+		Point size = getSSize();
+		int width 	= size.x;
+		int height 	= size.y;
+		
+		int side = (width > height/2) ? height/2 : width;
+		
+		Rect lTop 	= new Rect( 0, 0, width , height );
+		top = lTop;
+		canvas.drawBitmap( bmp, src, lTop, paint1);
+		
 
+		//Rect lBot 	= new Rect( width/4, width/2 + 10, width/2 , width/2 + 10 + width/2 );
+//		bottom = lBot;
+		//canvas.drawBitmap( bmp, src, lBot, paint1);
+		Log.v( "goingkilo", "done drawin da troll");
+
+	}
+	
+	public Point getSSize(){
 		WindowManager wm = (WindowManager) ctx.getSystemService(Context.WINDOW_SERVICE);
 		Display display = wm.getDefaultDisplay();
 
 		Point size 	= new Point();
 		display.getSize(size);
-		int width 	= size.x;
-		int height 	= size.y;
-		
-		Rect lTop 	= new Rect( width/4, 0, width/2 , width/2 );
-		Rect lBot 	= new Rect( width/4, width/2 + 10, width/2 , width/2 + 10 + width/2 );
-
-		top = lTop;
-		bottom = lBot;
-
-		canvas.drawBitmap( bmp, src, lTop, paint1);
-		canvas.drawBitmap( bmp, src, lBot, paint1);
-		Log.v( "goingkilo", "done drawin da troll");
-
+		return size;
+//		Display display = getWindowManager().getDefaultDisplay(); 
+//		int width = display.getWidth();  // deprecated
+//		int height = display.getHeight();  // deprecated
 	}
 
 	public static Bitmap getMaskedBitmap(Resources res, int sourceResId, int maskResId) {
@@ -71,7 +78,13 @@ public class FashionaView extends TextView {
 			options.inMutable = true;
 		}
 		options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-		Bitmap source = BitmapFactory.decodeResource(res, sourceResId, options);
+		//Bitmap source = BitmapFactory.decodeResource(res, sourceResId, options);
+		Log.d( "goingkilo", "FashionaView:getLatestBitmapPath returned :" + FileMan.getLatestBitmapPath());
+		
+		Bitmap source = BitmapFactory.decodeFile( FileMan.getLatestBitmapPath(), options);
+		if ( source == null ) {
+			source = BitmapFactory.decodeResource(res, sourceResId, options);
+		}
 		Bitmap bitmap;
 		if (source.isMutable()) {
 			bitmap = source;
@@ -99,14 +112,14 @@ public class FashionaView extends TextView {
 		switch (event.getAction()) {
 			case MotionEvent.ACTION_UP:
 				if( top.contains( (int)x, (int)y)) {
-					Log.d( "goingkilo", "TOP");	
-					Toast.makeText(ctx, "TOP", Toast.LENGTH_SHORT).show();
+					Log.d( "goingkilo", "Touch");	
+					Toast.makeText(ctx, "Calling photoman", Toast.LENGTH_SHORT).show();
+					Intent i = new Intent( ctx, PhotoMan.class);
+					Point p = getSSize();
+					i.putExtra( "x", p.x);
+					i.putExtra( "y", p.y);
+					ctx.startActivity(i);
 				}
-				if( bottom.contains( (int)x, (int)y)) {
-					Log.d( "goingkilo", "BOTTOM");
-					Toast.makeText(ctx, "BOTTOM", Toast.LENGTH_SHORT).show();
-				}
-				
 				break;
 			default:
 				break;
