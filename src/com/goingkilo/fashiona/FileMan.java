@@ -35,8 +35,17 @@ public class FileMan {
 		boolean b = appDir.mkdirs();
 		Log.v("goingkilo", "Created app folder :" + appDir.getAbsolutePath() + " > " + b);
 
-		bitmaps = new ArrayList<String>();
+		initFileList(appDir);
+		
 		initDone = true;
+	}
+
+	private static void initFileList(File appDir) {
+		bitmaps = new ArrayList<String>();
+		File[] files = appDir.listFiles();
+		for(File f: files){
+			bitmaps.add( f.getAbsolutePath());
+		}
 	}
 
 	static void getVersion() {
