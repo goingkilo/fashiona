@@ -1,6 +1,5 @@
 package com.goingkilo.fashiona;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -12,22 +11,37 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.os.Build;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Display;
+import android.view.View;
 import android.view.WindowManager;
-import android.widget.TextView;
 
-public class FashionaView extends TextView {
+public class FashionaView extends View {
 
 	Paint paint1 ;
 	Context ctx;
 	Rect top, bottom;
 
+	void init(){}
+	
 	public FashionaView(Context context) {
 		super(context);
 		ctx = context;
 		paint1 = new Paint( Paint.ANTI_ALIAS_FLAG);
 	}
+	
+	public FashionaView(Context context, AttributeSet attrs) {
+        super(context, attrs );
+        ctx = context;
+        paint1 = new Paint( Paint.ANTI_ALIAS_FLAG);
+    }
+	
+	public FashionaView(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+        ctx = context;
+        paint1 = new Paint( Paint.ANTI_ALIAS_FLAG);
+    }
 
 	@Override
 	public void onDraw(Canvas canvas){

@@ -10,6 +10,9 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.Toast;
 
 //TODO:  speed up combined-image creation .Use transparent brush to load image instead of porterduff 
@@ -24,28 +27,28 @@ public class FashionaActivity extends Activity {
 		if (!FileMan.initDone) {
 			FileMan.init(this);
 		}
-		fashionaView = new FashionaView(this);
+		fashionaView = (FashionaView) findViewById(R.id.fashionaView);
+		Button left = (Button) findViewById(R.id.leftButton);
+		Button right = (Button) findViewById(R.id.rightButton);
 
-		fashionaView.setOnTouchListener(new OnSwipeTouchListener() {
-			public void onSwipeTop() {
-			}
+		left.setOnClickListener(new OnClickListener() {
 
-			public void onSwipeRight() {
-				FileMan.right();
-				fashionaView.invalidate();
-			}
-
-			public void onSwipeLeft() {
+			@Override
+			public void onClick(View v) {
 				FileMan.left();
 				fashionaView.invalidate();
 			}
-
-			public void onSwipeBottom() {
-			}
-
 		});
 
-		setContentView(fashionaView);
+		right.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				FileMan.right();
+				fashionaView.invalidate();
+			}
+		});
+
 	}
 
 	@Override
@@ -62,36 +65,37 @@ public class FashionaActivity extends Activity {
 		switch (item.getItemId()) {
 
 		case R.id.action_compose:
-			Toast.makeText( this, "Let's take a picture", Toast.LENGTH_SHORT).show();
-			Intent i = new Intent( this, PhotoMan.class);
+			Toast.makeText(this, "Let's take a picture", Toast.LENGTH_SHORT).show();
+			Intent i = new Intent(this, PhotoMan.class);
 			startActivity(i);
 			break;
 
 		case R.id.action_share:
 			Intent share = new Intent(Intent.ACTION_SEND);
 			share.setType("image/jpeg");
-			share.putExtra(Intent.EXTRA_STREAM,Uri.parse(FileMan.getBitmapPath()));
-			if(isPackageInstalled("com.whatsapp",this)){
-				share.setPackage("com.whatsapp"); 
+			share.putExtra(Intent.EXTRA_STREAM, Uri.parse(FileMan.getBitmapPath()));
+			if (isPackageInstalled("com.whatsapp", this)) {
+				share.setPackage("com.whatsapp");
 				startActivity(Intent.createChooser(share, "Share Image"));
 
 			} else {
 				Toast.makeText(getApplicationContext(), "Please Install Whatsapp", Toast.LENGTH_LONG).show();
 			}
 			// share text
-			//Intent sendIntent = new Intent();
-			//sendIntent.setAction(Intent.ACTION_SEND);
-			//sendIntent.putExtra(Intent.EXTRA_TEXT, "This is my text to send.");
-			//sendIntent.setType("text/plain");
-			//startActivity(sendIntent);
+			// Intent sendIntent = new Intent();
+			// sendIntent.setAction(Intent.ACTION_SEND);
+			// sendIntent.putExtra(Intent.EXTRA_TEXT, "This is my text to
+			// send.");
+			// sendIntent.setType("text/plain");
+			// startActivity(sendIntent);
 			break;
 
-			case R.id.action_del:
-				Toast.makeText( this, "Delete is not yet implemented", Toast.LENGTH_SHORT).show();
-				break;
+		case R.id.action_del:
+			Toast.makeText(this, "Delete is not yet implemented", Toast.LENGTH_SHORT).show();
+			break;
 
 		}
-		//consumed
+		// consumed
 		return true;
 	}
 
