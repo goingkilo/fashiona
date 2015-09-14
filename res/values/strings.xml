@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Fashiona</string>
+    <string name="action_compose">Photo</string>
+    <string name="action_share">Share</string>
+    <string name="action_del">Del</string>
 </resources>

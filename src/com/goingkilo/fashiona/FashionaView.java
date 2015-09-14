@@ -1,7 +1,7 @@
 package com.goingkilo.fashiona;
 
+import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -14,10 +14,8 @@ import android.graphics.Rect;
 import android.os.Build;
 import android.util.Log;
 import android.view.Display;
-import android.view.MotionEvent;
 import android.view.WindowManager;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class FashionaView extends TextView {
 
@@ -34,13 +32,11 @@ public class FashionaView extends TextView {
 	@Override
 	public void onDraw(Canvas canvas){
 		Resources res = getResources();
-		//R.drawable.golden_gate, R.drawable.troll_face
 		Bitmap bmp = getMaskedBitmap( res, R.drawable.sweater, R.drawable.stencil);
 		Log.v( "goingkilo", "drawing da troll");
 	
 		Rect src = new Rect( 0,0, bmp.getWidth(), bmp.getHeight() );
 
-		//Display display = getWindowManager().getDefaultDisplay();
 		Point size = getSSize();
 		int width 	= size.x;
 		int height 	= size.y;
@@ -50,13 +46,8 @@ public class FashionaView extends TextView {
 		Rect lTop 	= new Rect( 0, 0, width , height );
 		top = lTop;
 		canvas.drawBitmap( bmp, src, lTop, paint1);
-		
 
-		//Rect lBot 	= new Rect( width/4, width/2 + 10, width/2 , width/2 + 10 + width/2 );
-//		bottom = lBot;
-		//canvas.drawBitmap( bmp, src, lBot, paint1);
 		Log.v( "goingkilo", "done drawin da troll");
-
 	}
 	
 	public Point getSSize(){
@@ -71,6 +62,8 @@ public class FashionaView extends TextView {
 //		int height = display.getHeight();  // deprecated
 	}
 
+	// mask is always a resource (for now :)
+	// if Fileman has nothing, then we use passed in source 
 	public static Bitmap getMaskedBitmap(Resources res, int sourceResId, int maskResId) {
 
 		BitmapFactory.Options options = new BitmapFactory.Options();
@@ -78,13 +71,20 @@ public class FashionaView extends TextView {
 			options.inMutable = true;
 		}
 		options.inPreferredConfig = Bitmap.Config.ARGB_8888;
-		//Bitmap source = BitmapFactory.decodeResource(res, sourceResId, options);
-		Log.d( "goingkilo", "FashionaView:getLatestBitmapPath returned :" + FileMan.getLatestBitmapPath());
-		
-		Bitmap source = BitmapFactory.decodeFile( FileMan.getLatestBitmapPath(), options);
-		if ( source == null ) {
-			source = BitmapFactory.decodeResource(res, sourceResId, options);
+
+		Log.d( "goingkilo", "FashionaView:getLatestBitmapPath returned :" + FileMan.getBitmapPath());
+		Bitmap source1;
+		String latest = FileMan.getBitmapPath();
+		if ( latest == null ) {
+			source1 = BitmapFactory.decodeResource(res, sourceResId, options);
 		}
+		else {
+			source1 = BitmapFactory.decodeFile( latest , options);
+		}
+		Log.e("goingkilo","source1 is " + source1);
+		Bitmap mask = BitmapFactory.decodeResource(res, maskResId);
+		Bitmap source = Bitmap.createScaledBitmap( source1, mask.getWidth(), mask.getHeight(), false);
+		
 		Bitmap bitmap;
 		if (source.isMutable()) {
 			bitmap = source;
@@ -93,38 +93,13 @@ public class FashionaView extends TextView {
 			source.recycle();
 		}
 		bitmap.setHasAlpha(true);
+		
 		Canvas canvas = new Canvas(bitmap);
-		Bitmap mask = BitmapFactory.decodeResource(res, maskResId);
-
 		Paint paint = new Paint();
-		//
 		paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_ATOP  ));
 		canvas.drawBitmap(mask, 0, 0, paint);
 		mask.recycle();
 		return bitmap;
 	}
-
-	@Override
-	public boolean onTouchEvent(MotionEvent event) {
-		float x = event.getX();
-		float y = event.getY();
-
-		switch (event.getAction()) {
-			case MotionEvent.ACTION_UP:
-				if( top.contains( (int)x, (int)y)) {
-					Log.d( "goingkilo", "Touch");	
-					Toast.makeText(ctx, "Calling photoman", Toast.LENGTH_SHORT).show();
-					Intent i = new Intent( ctx, PhotoMan.class);
-					Point p = getSSize();
-					i.putExtra( "x", p.x);
-					i.putExtra( "y", p.y);
-					ctx.startActivity(i);
-				}
-				break;
-			default:
-				break;
-		}
-		return true;
-	}
-
+	
 }
