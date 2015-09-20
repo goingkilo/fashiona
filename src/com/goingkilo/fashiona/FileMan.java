@@ -1,6 +1,7 @@
 package com.goingkilo.fashiona;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,6 +9,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Environment;
 import android.util.Log;
 
@@ -36,15 +38,15 @@ public class FileMan {
 		Log.v("goingkilo", "Created app folder :" + appDir.getAbsolutePath() + " > " + b);
 
 		initFileList(appDir);
-		
+
 		initDone = true;
 	}
 
 	private static void initFileList(File appDir) {
 		bitmaps = new ArrayList<String>();
 		File[] files = appDir.listFiles();
-		for(File f: files){
-			bitmaps.add( f.getAbsolutePath());
+		for (File f : files) {
+			bitmaps.add(f.getAbsolutePath());
 		}
 	}
 
@@ -106,26 +108,41 @@ public class FileMan {
 		return latest.getAbsolutePath();
 	}
 
-	public static void addPhoto(String path){
+	public static void addPhoto(String path) {
 		bitmaps.add(path);
-		cur_index = bitmaps.size() -1;
+		cur_index = bitmaps.size() - 1;
 	}
-	
+
 	public static String getBitmapPath() {
 		return (bitmaps.size() == 0 ? null : bitmaps.get(cur_index));
 	}
 
 	public static void left() {
-		cur_index = cur_index -1;
-		if( cur_index < 0 ){
-			cur_index = cur_index + bitmaps.size(); 
+		cur_index = cur_index - 1;
+		if (cur_index < 0) {
+			cur_index = cur_index + bitmaps.size();
 		}
 	}
 
 	public static void right() {
-		cur_index = cur_index +1;
-		if( cur_index >= bitmaps.size() ){
-			cur_index = 0; 
+		cur_index = cur_index + 1;
+		if (cur_index >= bitmaps.size()) {
+			cur_index = 0;
 		}
 	}
+
+	public static String saveBitmap(Bitmap compositeBitmap) {
+		try {
+			File newFile = File.createTempFile("composite", ".jpg", getAppDir());
+			FileOutputStream outStream = new FileOutputStream(newFile);
+			compositeBitmap.compress(Bitmap.CompressFormat.PNG, 100, outStream);
+			outStream.flush();
+			outStream.close();
+			return newFile.getAbsolutePath();
+
+		} catch (IOException e) {
+			return null;
+		}
+	}
+
 }

@@ -75,7 +75,7 @@ public class FashionaActivity extends Activity {
 		case R.id.action_share:
 			Intent share = new Intent(Intent.ACTION_SEND);
 			share.setType("image/jpeg");
-			share.putExtra(Intent.EXTRA_STREAM, Uri.parse(FileMan.getBitmapPath()));
+			share.putExtra(Intent.EXTRA_STREAM, Uri.parse( fashionaView.getCompositeBitmap()));
 			if (isPackageInstalled("com.whatsapp", this)) {
 				share.setPackage("com.whatsapp");
 				startActivity(Intent.createChooser(share, "Share Image"));

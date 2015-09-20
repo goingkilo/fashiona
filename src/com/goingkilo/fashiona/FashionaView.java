@@ -18,6 +18,7 @@ public class FashionaView extends View {
 	Paint paint1;
 	Context ctx;
 	Rect top;
+	Resources res ;
 
 	void init(Context context) {
 		ctx = context;
@@ -32,6 +33,8 @@ public class FashionaView extends View {
 
 		Rect lTop = new Rect(0, 0, width, height);
 		top = lTop;
+		
+		res = getResources();
 	}
 
 	public FashionaView(Context context) {
@@ -51,7 +54,7 @@ public class FashionaView extends View {
 
 	@Override
 	public void onDraw(Canvas canvas) {
-		Resources res = getResources();
+		
 		Bitmap compositeBitmap = PhotoMan.getMaskedBitmap(res, R.drawable.sweater, R.drawable.stencil);
 		Log.v("goingkilo", "drawing da troll");
 
@@ -74,6 +77,14 @@ public class FashionaView extends View {
 		// Display display = getWindowManager().getDefaultDisplay();
 		// int width = display.getWidth(); // deprecated
 		// int height = display.getHeight(); // deprecated
+	}
+
+	public String getCompositeBitmap() {
+			Bitmap compositeBitmap = PhotoMan.getMaskedBitmap( res, R.drawable.sweater, R.drawable.stencil);
+
+			String filePath = FileMan.saveBitmap(compositeBitmap);
+			Log.v( "goingkilo", "file composited is :" +filePath);
+			return filePath;
 	}
 
 }
